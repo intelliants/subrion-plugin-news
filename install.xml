@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin name="news">
+	<title>News</title>
+	<summary>Allows to create news section.</summary>
+	<author>Intelliants LLC</author>
+	<contributor>Intelliants LLC</contributor>
+	<version>4.0.0</version>
+	<date>2015-11-03</date>
+	<compatibility>4.0</compatibility>
+
+	<actions>
+		<action name="news_view" url="news/" icon="list" pages="news_add,news_edit">View News</action>
+		<action name="news_add" url="news/add/" icon="plus" pages="news,news_edit">Add News</action>
+		<action type="dashboard" name="dashboard_news_add" url="news/add/" icon="plus">Add News</action>
+	</actions>
+
+	<adminpages>
+		<page group="content" name="news" url="news/" menus="menu" order="50">News</page>
+	</adminpages>
+
+	<pages>
+		<page menus="main,bottom" name="news" url="news/">News</page>
+	</pages>
+
+	<phrases>
+		<phrase category="admin" key="add_news">Add News</phrase>
+		<phrase category="admin" key="alias">Alias</phrase>
+		<phrase category="admin" key="body_is_empty">Body text is empty.</phrase>
+		<phrase category="admin" key="edit_news">Edit News</phrase>
+		<phrase category="admin" key="manage_news">Manage News</phrase>
+		<phrase category="admin" key="news_added">Entry added.</phrase>
+
+		<phrase category="common" key="news">News</phrase>
+		<phrase category="common" key="view_news">View News</phrase>
+
+		<phrase category="frontend" key="no_news">Administrator has not posted any news.</phrase>
+		<phrase category="frontend" key="posted">Posted</phrase>
+		<phrase category="frontend" key="view_all_news">View all news</phrase>
+		<phrase category="frontend" key="continue_reading">continue reading</phrase>
+	</phrases>
+
+	<configgroup name="news">News</configgroup>
+
+	<config group="news" name="news_plugin" type="divider" value="General">General</config>
+	<config group="news" name="news_number_block" type="text" description="Number of displayed news in Latest News block">3</config>
+	<config group="news" name="news_max_block" type="text" description="Number of chars in short description in Latest News block">100</config>
+	<config group="news" name="news_number" type="text" description="Number of displayed news per page">10</config>
+	<config group="news" name="news_max" type="text" description="Number of chars in short description">200</config>
+	<config group="news" name="news_order" type="select" values="alphabetic,date" description="News on News Page order by">date</config>
+
+	<config group="news" name="news_newsline_block" type="divider" value="Newsline block">Newsline block</config>
+	<config group="news" name="newsline_row_count" type="select" values="2,3,4" description="Number of displayed news in a row (columns)">3</config>
+	<config group="news" name="newsline_rows" type="select" values="1,2,3,4,5" description="Number of rows">1</config>
+	<config group="news" name="newsline_body_max" type="text" description="Number of chars in short description">300</config>
+	<config group="news" name="newsline_display_img" type="radio" values="1,0" description="Display images">0</config>
+
+	<blocks>
+		<block title="Latest News" name="latest_news" collapsible="1" position="left" type="smarty" classname="box-clear" filename="plugin:news:block.latest_news.tpl"><![CDATA[]]></block>
+		<block title="Newsline" name="newsline" position="verybottom" type="smarty" classname="box-clear" filename="plugin:news:block.newsline.tpl"><![CDATA[]]></block>
+	</blocks>
+
+	<hooks>
+		<hook name="phpCoreBeforePageDisplay" page_type="front">
+		<![CDATA[
+if (iaView::REQUEST_HTML == $iaView->getRequestType())
+{
+	if ($iaView->blockExists('latest_news'))
+	{
+		$stmt = '`status` = :status AND `lang` = :language ORDER BY `date` DESC';
+		$iaDb->bind($stmt, array('status' => iaCore::STATUS_ACTIVE, 'language' => $iaView->language));
+
+		$array = $iaDb->all(array('id', 'title', 'date', 'alias', 'body', 'image'), $stmt, 0, $iaCore->get('news_number_block'), 'news');
+		$iaView->assign('news_latest', $array);
+	}
+
+	if ($iaView->blockExists('newsline'))
+	{
+		$stmt = '`status` = :status AND `lang` = :language ORDER BY `date` DESC';
+		$iaDb->bind($stmt, array('status' => iaCore::STATUS_ACTIVE, 'language' => $iaView->language));
+
+		$news_count = $iaCore->get('newsline_row_count') * $iaCore->get('newsline_rows');
+
+		$sql =
+			'SELECT SQL_CALC_FOUND_ROWS ' .
+			'n.`id`, n.`title`, n.`date`, n.`body`, n.`alias`, n.`image`, m.`fullname` ' .
+			'FROM `:prefix:table_news` n ' .
+			'LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) ' .
+			'WHERE n.' . $stmt . ' LIMIT :start, :limit';
+
+		$sql = iaDb::printf($sql, array(
+			'prefix' => $iaDb->prefix,
+			'table_news' => 'news',
+			'table_members' => iaUsers::getTable(),
+			'start' => 0,
+			'limit' => $news_count
+		));
+		$array = $iaDb->getAll($sql);
+
+		$iaView->assign('newsline', $array);
+	}
+}
+		]]>
+		</hook>
+		<hook name="adminDashboardStatistics" page_type="admin"><![CDATA[$items['news:newss'] = 'plugin';]]></hook>
+	</hooks>
+
+	<install>
+		<sql>
+			<![CDATA[
+CREATE TABLE `{prefix}news` (
+	`id` mediumint(7) unsigned NOT NULL auto_increment,
+	`member_id` int(11) unsigned NOT NULL,
+	`lang` char(2) NOT NULL,
+	`status` enum('inactive', 'active') NOT NULL default 'active',
+	`date` datetime NOT NULL,
+	`alias` varchar(50) NOT NULL,
+	`title` varchar(150) NOT NULL,
+	`body` text NOT NULL,
+	`image` tinytext NOT NULL,
+	PRIMARY KEY  (`id`),
+	KEY `LANGUAGE` (`lang`),
+	FULLTEXT KEY `SEARCH` (`title`, `body`)
+) {mysql_version};
+			]]>
+		</sql>
+	</install>
+
+	<uninstall>
+		<sql>
+			<![CDATA[
+DROP TABLE IF EXISTS `{prefix}news`;
+			]]>
+		</sql>
+	</uninstall>
+	<upgrade>
+		<sql version="3.3.0">
+			<![CDATA[
+ALTER TABLE `{prefix}news` ADD `member_id` int(11) unsigned NOT NULL AFTER `id`;
+			]]>
+		</sql>
+	</upgrade>
+</plugin>
