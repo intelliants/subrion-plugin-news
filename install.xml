@@ -55,52 +55,12 @@
 	<config group="news" name="newsline_display_img" type="radio" values="1,0" description="Display images">0</config>
 
 	<blocks>
-		<block title="Latest News" name="latest_news" collapsible="1" position="left" type="smarty" classname="box-clear" filename="plugin:news:block.latest_news.tpl"><![CDATA[]]></block>
-		<block title="Newsline" name="newsline" position="verybottom" type="smarty" classname="box-clear" filename="plugin:news:block.newsline.tpl"><![CDATA[]]></block>
+		<block title="Latest News" name="latest_news" collapsible="1" position="left" type="smarty" classname="box-clear" filename="block.latest_news"><![CDATA[]]></block>
+		<block title="Newsline" name="newsline" position="verybottom" type="smarty" classname="box-clear" filename="block.newsline"><![CDATA[]]></block>
 	</blocks>
 
 	<hooks>
-		<hook name="phpCoreBeforePageDisplay" page_type="front">
-		<![CDATA[
-if (iaView::REQUEST_HTML == $iaView->getRequestType())
-{
-	if ($iaView->blockExists('latest_news'))
-	{
-		$stmt = '`status` = :status AND `lang` = :language ORDER BY `date` DESC';
-		$iaDb->bind($stmt, array('status' => iaCore::STATUS_ACTIVE, 'language' => $iaView->language));
-
-		$array = $iaDb->all(array('id', 'title', 'date', 'alias', 'body', 'image'), $stmt, 0, $iaCore->get('news_number_block'), 'news');
-		$iaView->assign('news_latest', $array);
-	}
-
-	if ($iaView->blockExists('newsline'))
-	{
-		$stmt = '`status` = :status AND `lang` = :language ORDER BY `date` DESC';
-		$iaDb->bind($stmt, array('status' => iaCore::STATUS_ACTIVE, 'language' => $iaView->language));
-
-		$news_count = $iaCore->get('newsline_row_count') * $iaCore->get('newsline_rows');
-
-		$sql =
-			'SELECT SQL_CALC_FOUND_ROWS ' .
-			'n.`id`, n.`title`, n.`date`, n.`body`, n.`alias`, n.`image`, m.`fullname` ' .
-			'FROM `:prefix:table_news` n ' .
-			'LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) ' .
-			'WHERE n.' . $stmt . ' LIMIT :start, :limit';
-
-		$sql = iaDb::printf($sql, array(
-			'prefix' => $iaDb->prefix,
-			'table_news' => 'news',
-			'table_members' => iaUsers::getTable(),
-			'start' => 0,
-			'limit' => $news_count
-		));
-		$array = $iaDb->getAll($sql);
-
-		$iaView->assign('newsline', $array);
-	}
-}
-		]]>
-		</hook>
+		<hook name="phpCoreBeforePageDisplay" page_type="front" filename="plugins/news/includes/hook.blocks-load.php"><![CDATA[]]></hook>
 		<hook name="adminDashboardStatistics" page_type="admin"><![CDATA[$items['news:newss'] = 'plugin';]]></hook>
 	</hooks>
 
