@@ -7,10 +7,8 @@
 				<h4>{lang key='options'}</h4>
 			</div>
 
-
-
 			<div class="row">
-				<label class="col col-lg-2 control-label" for="input-title">{lang key='title'}</label>
+				<label class="col col-lg-2 control-label" for="input-title">{lang key='title'} {lang key='field_required'}</label>
 				<div class="col col-lg-4">
 					<input type="text" name="title" value="{$item.title|escape:'html'}" id="input-title">
 				</div>
@@ -25,7 +23,7 @@
 			</div>
 
 			<div class="row">
-				<label class="col col-lg-2 control-label" for="body">{lang key='body'}</label>
+				<label class="col col-lg-2 control-label" for="body">{lang key='body'} {lang key='field_required'}</label>
 				<div class="col col-lg-8">
 					{ia_wysiwyg name='body' value=$item.body}
 				</div>
@@ -41,7 +39,7 @@
 							</a>
 
 							<div class="caption">
-								<a class="btn btn-small btn-danger" href="javascript:void(0);" title="{lang key='delete'}" onclick="return intelli.admin.removeFile('{$item.image}', this, 'news', 'image', '{$item.id}')"><i class=" i-remove-sign"></i></a>
+								<a class="btn btn-small btn-danger" href="javascript:void(0);" title="{lang key='delete'}" onclick="return intelli.admin.removeFile('{$item.image}', this, 'news', 'image', '{$id}')"><i class=" i-remove-sign"></i></a>
 							</div>
 						</div>
 					{/if}
@@ -76,7 +74,6 @@
 		{include file='fields-system.tpl' datetime=true}
 
 	</div>
-
 
 </form>
 {ia_add_media files='js:_IA_URL_plugins/news/js/admin/index'}

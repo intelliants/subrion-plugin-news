@@ -153,23 +153,6 @@ class iaBackendController extends iaAbstractControllerPluginBackend
 
 		$entry['alias'] = $this->getHelper()->titleAlias(empty($entry['alias']) ? $entry['title'] : $entry['alias']);
 
-
-		if (!empty($data['owner']))
-		{
-			if ($memberId = $this->_iaDb->one_bind('id', '`username` = :name OR `fullname` = :name', array('name' => iaSanitize::sql($_POST['owner'])), iaUsers::getTable()))
-			{
-				$entry['member_id'] = $memberId;
-			}
-			else
-			{
-				$this->addMessage('incorrect_owner_specified');
-			}
-		}
-		else
-		{
-			$entry['member_id'] = iaUsers::getIdentity()->id;
-		}
-
 		if ($this->getMessages())
 		{
 			return false;
@@ -229,7 +212,7 @@ class iaBackendController extends iaAbstractControllerPluginBackend
 		$iaUsers = $this->_iaCore->factory('users');
 		$owner = empty($entryData['member_id']) ? iaUsers::getIdentity(true) :  $iaUsers->getInfo($entryData['member_id']);
 
-		$entryData['owner'] = $owner['fullname'];
+		$entryData['owner'] = $owner['fullname'] . " ({$owner['email']})";
 	}
 
 	protected function _setPageTitle(&$iaView, array $entryData, $action)
