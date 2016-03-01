@@ -39,7 +39,7 @@
 							</a>
 
 							<div class="caption">
-								<a class="btn btn-small btn-danger" href="javascript:void(0);" title="{lang key='delete'}" onclick="return intelli.admin.removeFile('{$item.image}', this, 'news', 'image', '{$id}')"><i class=" i-remove-sign"></i></a>
+								<a class="btn btn-sm btn-danger" href="javascript:void(0);" title="{lang key='delete'}" onclick="return intelli.admin.removeFile('{$item.image}', this, 'news', 'image', '{$id}')"><i class=" i-remove-sign"></i></a>
 							</div>
 						</div>
 					{/if}

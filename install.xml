@@ -4,8 +4,8 @@
 	<summary>Allows to create news section.</summary>
 	<author>Intelliants LLC</author>
 	<contributor>Intelliants LLC</contributor>
-	<version>4.0.0</version>
-	<date>2015-11-03</date>
+	<version>4.0.1</version>
+	<date>2016-03-01</date>
 	<compatibility>4.0</compatibility>
 
 	<actions>
@@ -55,8 +55,8 @@
 	<config group="news" name="newsline_display_img" type="radio" values="1,0" description="Display images">0</config>
 
 	<blocks>
-		<block title="Latest News" name="latest_news" collapsible="1" position="left" type="smarty" classname="box-clear" filename="block.latest_news"><![CDATA[]]></block>
-		<block title="Newsline" name="newsline" position="verybottom" type="smarty" classname="box-clear" filename="block.newsline"><![CDATA[]]></block>
+		<block title="Latest News" name="latest_news" collapsible="1" position="left" type="smarty" classname="" filename="block.latest_news"><![CDATA[]]></block>
+		<block title="Newsline" name="newsline" position="verybottom" type="smarty" classname="" filename="block.newsline"><![CDATA[]]></block>
 	</blocks>
 
 	<hooks>
