@@ -10,7 +10,7 @@
 
 	<actions>
 		<action name="news_view" url="news/" icon="list" pages="news_add,news_edit">View News</action>
-		<action name="news_add" url="news/add/" icon="plus" pages="news,news_edit">Add News</action>
+		<action name="news_add" url="news/add/" icon="plus" pages="news,news_edit">quick_add_news</action>
 		<action type="dashboard" name="dashboard_news_add" url="news/add/" icon="plus">Add News</action>
 	</actions>
 
