@@ -51,8 +51,9 @@
 			<div class="row">
 				<label class="col col-lg-2 control-label" for="input-date">{lang key='date'}</label>
 				<div class="col col-lg-4">
+					
 					<div class="input-group">
-						<input type="text" class="js-datepicker" name="date" id="input-date" data-date-show-time="true" data-date-format="yyyy-mm-dd H:i" value="{$item.date}">
+						<input type="text" class="js-datepicker" name="date" id="input-date" data-date-format="YYYY-MM-DD HH:mm:ss" value="{$item.date}">
 						<span class="input-group-addon js-datepicker-toggle"><i class="i-calendar"></i></span>
 					</div>
 				</div>
