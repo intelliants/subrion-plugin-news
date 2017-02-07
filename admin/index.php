@@ -153,41 +153,29 @@ class iaBackendController extends iaAbstractControllerPluginBackend
 
 		$entry['alias'] = $this->getHelper()->titleAlias(empty($entry['alias']) ? $entry['title'] : $entry['alias']);
 
-		if ($this->getMessages())
+		if (!$this->getMessages())
 		{
-			return false;
+			if (isset($_FILES['image']['error']) && !$_FILES['image']['error'])
+			{
+				try
+				{
+					$iaField = $this->_iaCore->factory('field');
+
+					$path = $iaField->uploadImage($_FILES['image'], 800, 600, 250, 250, 'crop');
+
+					empty($entry['image']) || $iaField->deleteUploadedFile('image', $this->getTable(), $this->getEntryId(), $entry['image']);
+					$entry['image'] = $path;
+				}
+				catch (Exception $e)
+				{
+					$this->addMessage($e->getMessage(), false);
+				}
+			}
 		}
 
 		unset($entry['owner']);
 
-		if (isset($_FILES['image']['tmp_name']) && $_FILES['image']['tmp_name'])
-		{
-			$iaPicture = $this->_iaCore->factory('picture');
-
-			$path = iaUtil::getAccountDir();
-			$file = $_FILES['image'];
-			$token = iaUtil::generateToken();
-			$info = array(
-				'image_width' => 800,
-				'image_height' => 600,
-				'thumb_width' => 250,
-				'thumb_height' => 250,
-				'resize_mode' => iaPicture::CROP
-			);
-
-			if ($image = $iaPicture->processImage($file, $path, $token, $info))
-			{
-				if ($entry['image']) // it has an already assigned image
-				{
-					$iaPicture = $this->_iaCore->factory('picture');
-					$iaPicture->delete($entry['image']);
-				}
-
-				$entry['image'] = $image;
-			}
-		}
-
-		return true;
+		return !$this->getMessages();
 	}
 
 	protected function _postSaveEntry(array &$entry, array $data, $action)

@@ -39,7 +39,7 @@ if (iaView::REQUEST_HTML == $iaView->getRequestType())
 
 		$sql =
 			'SELECT SQL_CALC_FOUND_ROWS ' .
-			'n.`id`, n.`title`, n.`date`, n.`body`, n.`alias`, n.`image`, m.`fullname` ' .
+				'n.`id`, n.`title`, n.`date`, n.`body`, n.`alias`, n.`image`, m.`fullname` ' .
 			'FROM `:prefix:table_news` n ' .
 			'LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) ' .
 			'WHERE n.`id` = :id AND n.`status` = \':status\'';
@@ -95,10 +95,11 @@ if (iaView::REQUEST_HTML == $iaView->getRequestType())
 
 		$sql =
 			'SELECT SQL_CALC_FOUND_ROWS ' .
-			'n.`id`, n.`title`, n.`date`, n.`body`, n.`alias`, n.`image`, m.`fullname` ' .
+				'n.`id`, n.`title`, n.`date`, n.`body`, n.`alias`, n.`image`, m.`fullname` ' .
 			'FROM `:prefix:table_news` n ' .
 			'LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) ' .
-			'WHERE n.' . $stmt . $order . ' LIMIT :start, :limit';
+			'WHERE n.' . $stmt . $order . ' ' .
+			'LIMIT :start, :limit';
 
 		$sql = iaDb::printf($sql, array(
 			'prefix' => $iaDb->prefix,

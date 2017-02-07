@@ -4,7 +4,7 @@
 	<summary>Allows to create news section.</summary>
 	<author>Intelliants LLC</author>
 	<contributor>Intelliants LLC</contributor>
-	<version>4.0.1</version>
+	<version>4.0.3</version>
 	<date>2016-03-01</date>
 	<compatibility>4.0</compatibility>
 
@@ -85,6 +85,14 @@ CREATE TABLE `{prefix}news` (
 		</sql>
 	</install>
 
+	<upgrade>
+		<sql version="4.0.3">
+			<![CDATA[
+ALTER TABLE `{prefix}news` ADD `member_id` int(11) unsigned NOT NULL AFTER `id`;
+			]]>
+		</sql>
+	</upgrade>
+
 	<uninstall>
 		<sql>
 			<![CDATA[
@@ -92,11 +100,4 @@ DROP TABLE IF EXISTS `{prefix}news`;
 			]]>
 		</sql>
 	</uninstall>
-	<upgrade>
-		<sql version="3.3.0">
-			<![CDATA[
-ALTER TABLE `{prefix}news` ADD `member_id` int(11) unsigned NOT NULL AFTER `id`;
-			]]>
-		</sql>
-	</upgrade>
 </plugin>

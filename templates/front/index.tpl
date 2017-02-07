@@ -5,7 +5,7 @@
 		<p class="text-fade-50">{lang key='posted_on'} {$entry.date|date_format:$core.config.date_format} {lang key='by'} {$entry.fullname}</p>
 
 		{if $entry.image}
-			<div class="ia-item__image">{printImage imgfile=$entry.image fullimage=true title=$entry.title}</div>
+			<div class="ia-item__image">{ia_image file=$entry.image type='large' title=$entry.title}</div>
 		{/if}
 
 		<div class="ia-item__content">{$entry.body}</div>
@@ -28,13 +28,13 @@
 			{foreach $news as $entry}
 				<div class="media ia-item">
 					{if $entry.image}
-						<a href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.alias}" class="pull-left">{printImage imgfile=$entry.image width='150' title=$entry.title class='media-object'}</a>
+						<a href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.alias}" class="pull-left">{ia_image file=$entry.image width=150 title=$entry.title class='media-object'}</a>
 					{/if}
 					<div class="media-body">
 						<h4 class="media-heading">
-							<a href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.alias}">{$entry.title}</a>
+							<a href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.alias}">{$entry.title|escape:'html'}</a>
 						</h4>
-						<p class="text-fade-50">{lang key='posted_on'} {$entry.date|date_format:$core.config.date_format} {lang key='by'} {$entry.fullname}</p>
+						<p class="text-fade-50">{lang key='posted_on'} {$entry.date|date_format:$core.config.date_format} {lang key='by'} {$entry.fullname|escape:'html'}</p>
 						<div class="ia-item__content">{$entry.body|strip_tags|truncate:$core.config.news_max:'...'}</div>
 					</div>
 				</div>
