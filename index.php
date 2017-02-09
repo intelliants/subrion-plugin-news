@@ -2,7 +2,7 @@
 /******************************************************************************
  *
  * Subrion - open source content management system
- * Copyright (C) 2015 Intelliants, LLC <http://www.intelliants.com>
+ * Copyright (C) 2017 Intelliants, LLC <https://intelliants.com>
  *
  * This file is part of Subrion.
  *
@@ -20,7 +20,7 @@
  * along with Subrion. If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @link http://www.subrion.org/
+ * @link https://subrion.org/
  *
  ******************************************************************************/
 
@@ -37,13 +37,12 @@ if (iaView::REQUEST_HTML == $iaView->getRequestType())
 			return iaView::errorPage(iaView::ERROR_NOT_FOUND);
 		}
 
-		$sql =
-			'SELECT SQL_CALC_FOUND_ROWS ' .
-				'n.`id`, n.`title`, n.`date`, n.`body`, n.`alias`, n.`image`, m.`fullname` ' .
-			'FROM `:prefix:table_news` n ' .
-			'LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) ' .
-			'WHERE n.`id` = :id AND n.`status` = \':status\'';
-
+		$sql = <<<SQL
+SELECT SQL_CALC_FOUND_ROWS n.`id`, n.`title`, n.`date`, n.`body`, n.`alias`, n.`image`, m.`fullname` 
+	FROM `:prefix:table_news` n 
+LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) 
+WHERE n.`id` = :id AND n.`status` = ':status'
+SQL;
 		$sql = iaDb::printf($sql, array(
 			'prefix' => $iaDb->prefix,
 			'table_news' => 'news',

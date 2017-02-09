@@ -2,7 +2,7 @@
 /******************************************************************************
  *
  * Subrion - open source content management system
- * Copyright (C) 2015 Intelliants, LLC <http://www.intelliants.com>
+ * Copyright (C) 2017 Intelliants, LLC <https://intelliants.com>
  *
  * This file is part of Subrion.
  *
@@ -20,7 +20,7 @@
  * along with Subrion. If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @link http://www.subrion.org/
+ * @link https://subrion.org/
  *
  ******************************************************************************/
 
@@ -39,22 +39,22 @@ if (iaView::REQUEST_HTML == $iaView->getRequestType())
 
 		if ($iaView->blockExists('newsline'))
 		{
-			$stmt = '`status` = :status AND `lang` = :language ORDER BY `date` DESC';
-			$iaDb->bind($stmt, array('status' => iaCore::STATUS_ACTIVE, 'language' => $iaView->language));
-
 			$news_count = $iaCore->get('newsline_row_count') * $iaCore->get('newsline_rows');
 
-			$sql =
-				'SELECT SQL_CALC_FOUND_ROWS ' .
-				'n.`id`, n.`title`, n.`date`, n.`body`, n.`alias`, n.`image`, m.`fullname` ' .
-				'FROM `:prefix:table_news` n ' .
-				'LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) ' .
-				'WHERE n.' . $stmt . ' LIMIT :start, :limit';
-
+			$sql = <<<SQL
+SELECT SQL_CALC_FOUND_ROWS n.`id`, n.`title`, n.`date`, n.`body`, n.`alias`, n.`image`, m.`fullname` 
+	FROM `:prefix:table_news` n 
+LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) 
+WHERE n.`status` = ':status' && `lang` = ':language'
+ORDER BY `date` DESC
+LIMIT :start, :limit
+SQL;
 			$sql = iaDb::printf($sql, array(
 				'prefix' => $iaDb->prefix,
 				'table_news' => 'news',
 				'table_members' => iaUsers::getTable(),
+				'status' => iaCore::STATUS_ACTIVE,
+				'language' => $iaView->language,
 				'start' => 0,
 				'limit' => $news_count
 			));

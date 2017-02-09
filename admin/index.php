@@ -2,7 +2,7 @@
 /******************************************************************************
  *
  * Subrion - open source content management system
- * Copyright (C) 2015 Intelliants, LLC <http://www.intelliants.com>
+ * Copyright (C) 2017 Intelliants, LLC <https://intelliants.com>
  *
  * This file is part of Subrion.
  *
@@ -20,7 +20,7 @@
  * along with Subrion. If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @link http://www.subrion.org/
+ * @link https://subrion.org/
  *
  ******************************************************************************/
 
@@ -62,14 +62,13 @@ class iaBackendController extends iaAbstractControllerPluginBackend
 
 	protected function _gridQuery($columns, $where, $order, $start, $limit)
 	{
-		$sql =
-			'SELECT SQL_CALC_FOUND_ROWS '
-			. 'n.`id`, n.`title`, n.`alias`, n.`date`, n.`status`, m.`fullname` `owner`, 1 `update`, 1 `delete` ' .
-			'FROM `:prefix:table_news` n ' .
-			'LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) ' .
-			'WHERE :where :order ' .
-			'LIMIT :start, :limit';
-
+		$sql = <<<SQL
+SELECT SQL_CALC_FOUND_ROWS n.`id`, n.`title`, n.`alias`, n.`date`, n.`status`, m.`fullname` `owner`, 1 `update`, 1 `delete` 
+	FROM `:prefix:table_news` n 
+LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) 
+WHERE :where :order 
+LIMIT :start, :limit
+SQL;
 		$sql = iaDb::printf($sql, array(
 			'prefix' => $this->_iaDb->prefix,
 			'table_news' => $this->getTable(),
@@ -182,9 +181,7 @@ class iaBackendController extends iaAbstractControllerPluginBackend
 	{
 		$iaLog = $this->_iaCore->factory('log');
 
-		$actionCode = (iaCore::ACTION_ADD == $action)
-			? iaLog::ACTION_CREATE
-			: iaLog::ACTION_UPDATE;
+		$actionCode = (iaCore::ACTION_ADD == $action) ? iaLog::ACTION_CREATE : iaLog::ACTION_UPDATE;
 		$params = array(
 			'module' => 'news',
 			'item' => 'news',

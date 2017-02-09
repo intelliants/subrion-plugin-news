@@ -4,14 +4,14 @@
 	<summary>Allows to create news section.</summary>
 	<author>Intelliants LLC</author>
 	<contributor>Intelliants LLC</contributor>
-	<version>4.0.3</version>
-	<date>2016-03-01</date>
-	<compatibility>4.0</compatibility>
+	<version>4.1.0</version>
+	<date>2017-02-09</date>
+	<compatibility>4.1</compatibility>
 
 	<actions>
-		<action name="news_view" url="news/" icon="list" pages="news_add,news_edit">View News</action>
-		<action name="news_add" url="news/add/" icon="plus" pages="news,news_edit">Add News</action>
-		<action type="dashboard" name="dashboard_news_add" url="news/add/" icon="plus">Add News</action>
+		<action name="view_news" url="news/" icon="list" pages="news_add,news_edit"><![CDATA[]]></action>
+		<action name="add_news" url="news/add/" icon="plus" pages="news,news_edit"><![CDATA[]]></action>
+		<action type="dashboard_news_add" name="dashboard_news_add" url="news/add/" icon="plus"><![CDATA[]]></action>
 	</actions>
 
 	<adminpages>
@@ -23,6 +23,8 @@
 	</pages>
 
 	<phrases>
+		<phrase category="admin" key="dashboard_news_add">Add News</phrase>
+
 		<phrase category="admin" key="add_news">Add News</phrase>
 		<phrase category="admin" key="alias">Alias</phrase>
 		<phrase category="admin" key="body_is_empty">Body text is empty.</phrase>
@@ -84,14 +86,6 @@ CREATE TABLE `{prefix}news` (
 			]]>
 		</sql>
 	</install>
-
-	<upgrade>
-		<sql version="4.0.3">
-			<![CDATA[
-ALTER TABLE `{prefix}news` ADD `member_id` int(11) unsigned NOT NULL AFTER `id`;
-			]]>
-		</sql>
-	</upgrade>
 
 	<uninstall>
 		<sql>
