@@ -1,4 +1,4 @@
-{ia_add_media files='css: _IA_URL_plugins/news/templates/front/css/style'}
+{ia_add_media files='css: _IA_URL_modules/news/templates/front/css/style'}
 
 {if isset($entry)}
 	<div class="media ia-item news-entry">

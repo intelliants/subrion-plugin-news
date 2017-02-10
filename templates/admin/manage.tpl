@@ -77,4 +77,4 @@
 	</div>
 
 </form>
-{ia_add_media files='js:_IA_URL_plugins/news/js/admin/index'}
+{ia_add_media files='js:_IA_URL_modules/news/js/admin/index'}

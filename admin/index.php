@@ -36,13 +36,13 @@ class iaBackendController extends iaAbstractControllerPluginBackend
 	{
 		parent::__construct();
 
-		$iaNews = $this->_iaCore->factoryPlugin($this->getPluginName(), iaCore::ADMIN, $this->getName());
+		$iaNews = $this->_iaCore->factoryPlugin($this->getModuleName(), iaCore::ADMIN, $this->getName());
 		$this->setHelper($iaNews);
 	}
 
 	protected function _indexPage(&$iaView)
 	{
-		$iaView->grid('_IA_URL_plugins/' . $this->getPluginName() . '/js/admin/index');
+		$iaView->grid('_IA_URL_modules/' . $this->getModuleName() . '/js/admin/index');
 	}
 
 	protected function _modifyGridParams(&$conditions, &$values, array $params)

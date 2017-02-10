@@ -62,7 +62,7 @@
 	</blocks>
 
 	<hooks>
-		<hook name="phpCoreBeforePageDisplay" page_type="front" filename="plugins/news/includes/hook.blocks-load.php"><![CDATA[]]></hook>
+		<hook name="phpCoreBeforePageDisplay" page_type="front" filename="hook.blocks-load"><![CDATA[]]></hook>
 		<hook name="adminDashboardStatistics" page_type="admin"><![CDATA[$items['news:newss'] = 'plugin';]]></hook>
 	</hooks>
 
