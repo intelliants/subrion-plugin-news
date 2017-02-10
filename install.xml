@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin name="news">
+<module type="plugin" name="news">
 	<title>News</title>
 	<summary>Allows to create news section.</summary>
 	<author>Intelliants LLC</author>
@@ -94,4 +94,4 @@ DROP TABLE IF EXISTS `{prefix}news`;
 			]]>
 		</sql>
 	</uninstall>
-</plugin>
+</module>
