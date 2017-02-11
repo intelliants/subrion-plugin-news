@@ -24,11 +24,11 @@
  *
  ******************************************************************************/
 
-class iaBackendController extends iaAbstractControllerPluginBackend
+class iaBackendController extends iaAbstractControllerModuleBackend
 {
 	protected $_name = 'news';
 
-	protected $_gridFilters = array('status' => 'equal');
+	protected $_gridFilters = ['status' => 'equal'];
 	protected $_gridQueryMainTableAlias = 'n';
 
 
@@ -69,7 +69,7 @@ LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`)
 WHERE :where :order 
 LIMIT :start, :limit
 SQL;
-		$sql = iaDb::printf($sql, array(
+		$sql = iaDb::printf($sql, [
 			'prefix' => $this->_iaDb->prefix,
 			'table_news' => $this->getTable(),
 			'table_members' => iaUsers::getTable(),
@@ -77,7 +77,7 @@ SQL;
 			'order' => $order,
 			'start' => $start,
 			'limit' => $limit
-		));
+		]);
 
 		return $this->_iaDb->getAll($sql);
 	}
@@ -85,7 +85,7 @@ SQL;
 	protected function _gridRead($params)
 	{
 		return (isset($params['get']) && 'alias' == $params['get'])
-			? array('url' => IA_URL . 'news' . IA_URL_DELIMITER . $this->_iaDb->getNextId() . '-' . $this->getHelper()->titleAlias($params['title']))
+			? ['url' => IA_URL . 'news' . IA_URL_DELIMITER . $this->_iaDb->getNextId() . '-' . $this->getHelper()->titleAlias($params['title'])]
 			: parent::_gridRead($params);
 	}
 
@@ -102,7 +102,7 @@ SQL;
 	{
 		$result = false;
 		$stmt = iaDb::convertIds($id);
-		if ($row = $this->_iaDb->row(array('title', 'image'), $stmt))
+		if ($row = $this->_iaDb->row(['title', 'image'], $stmt))
 		{
 			$result = (bool)$this->_iaDb->delete($stmt);
 
@@ -114,7 +114,7 @@ SQL;
 
 			if ($result)
 			{
-				$this->_iaCore->factory('log')->write(iaLog::ACTION_DELETE, array('item' => 'news', 'name' => $row['title'], 'id' => (int)$id));
+				$this->_iaCore->factory('log')->write(iaLog::ACTION_DELETE, ['item' => 'news', 'name' => $row['title'], 'id' => (int)$id]);
 			}
 		}
 
@@ -182,12 +182,12 @@ SQL;
 		$iaLog = $this->_iaCore->factory('log');
 
 		$actionCode = (iaCore::ACTION_ADD == $action) ? iaLog::ACTION_CREATE : iaLog::ACTION_UPDATE;
-		$params = array(
+		$params = [
 			'module' => 'news',
 			'item' => 'news',
 			'name' => $entry['title'],
 			'id' => $this->getEntryId()
-		);
+		];
 
 		$iaLog->write($actionCode, $params);
 	}

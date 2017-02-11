@@ -24,7 +24,7 @@
  *
  ******************************************************************************/
 
-class iaNews extends abstractPlugin
+class iaNews extends abstractModuleAdmin
 {
 	const ALIAS_SUFFIX = '.html';
 
@@ -33,9 +33,9 @@ class iaNews extends abstractPlugin
 	public $dashboardStatistics = true;
 
 
-	public function getDashboardStatistics()
+	public function getDashboardStatistics($defaultProcessing = true)
 	{
-		$statuses = array(iaCore::STATUS_ACTIVE, iaCore::STATUS_INACTIVE);
+		$statuses = [iaCore::STATUS_ACTIVE, iaCore::STATUS_INACTIVE];
 		$rows = $this->iaDb->keyvalue('`status`, COUNT(*)', '1 GROUP BY `status`', self::getTable());
 		$total = 0;
 
@@ -45,13 +45,14 @@ class iaNews extends abstractPlugin
 			$total += $rows[$status];
 		}
 
-		return array(
+		return [
 			'icon' => 'news',
+			'caption' => iaLanguage::get('news'),
 			'item' => iaLanguage::get('news'),
 			'rows' => $rows,
 			'total' => $total,
 			'url' => 'news/'
-		);
+		];
 	}
 
 	public function titleAlias($title)

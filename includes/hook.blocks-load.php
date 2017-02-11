@@ -31,9 +31,9 @@ if (iaView::REQUEST_HTML == $iaView->getRequestType())
 		if ($iaView->blockExists('latest_news'))
 		{
 			$stmt = '`status` = :status AND `lang` = :language ORDER BY `date` DESC';
-			$iaDb->bind($stmt, array('status' => iaCore::STATUS_ACTIVE, 'language' => $iaView->language));
+			$iaDb->bind($stmt, ['status' => iaCore::STATUS_ACTIVE, 'language' => $iaView->language]);
 
-			$array = $iaDb->all(array('id', 'title', 'date', 'alias', 'body', 'image'), $stmt, 0, $iaCore->get('news_number_block'), 'news');
+			$array = $iaDb->all(['id', 'title', 'date', 'alias', 'body', 'image'], $stmt, 0, $iaCore->get('news_number_block'), 'news');
 			$iaView->assign('news_latest', $array);
 		}
 
@@ -49,7 +49,7 @@ WHERE n.`status` = ':status' && `lang` = ':language'
 ORDER BY `date` DESC
 LIMIT :start, :limit
 SQL;
-			$sql = iaDb::printf($sql, array(
+			$sql = iaDb::printf($sql, [
 				'prefix' => $iaDb->prefix,
 				'table_news' => 'news',
 				'table_members' => iaUsers::getTable(),
@@ -57,7 +57,7 @@ SQL;
 				'language' => $iaView->language,
 				'start' => 0,
 				'limit' => $news_count
-			));
+			]);
 			$array = $iaDb->getAll($sql);
 
 			$iaView->assign('newsline', $array);

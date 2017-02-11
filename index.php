@@ -43,13 +43,13 @@ SELECT SQL_CALC_FOUND_ROWS n.`id`, n.`title`, n.`date`, n.`body`, n.`alias`, n.`
 LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) 
 WHERE n.`id` = :id AND n.`status` = ':status'
 SQL;
-		$sql = iaDb::printf($sql, array(
+		$sql = iaDb::printf($sql, [
 			'prefix' => $iaDb->prefix,
 			'table_news' => 'news',
 			'table_members' => iaUsers::getTable(),
 			'id' => $id,
 			'status' => iaCore::STATUS_ACTIVE
-		));
+		]);
 
 		$entry = $iaDb->getRow($sql);
 
@@ -59,11 +59,11 @@ SQL;
 		}
 
 		iaBreadcrumb::toEnd($entry['title'], IA_SELF);
-		$openGraph = array(
+		$openGraph = [
 			'title' => $entry['title'],
 			'url' => IA_SELF,
 			'description' => $entry['body']
-		);
+		];
 
 		if ($entry['image'])
 		{
@@ -81,16 +81,16 @@ SQL;
 		$page = empty($_GET['page']) ? 0 : (int)$_GET['page'];
 		$page = ($page < 1) ? 1 : $page;
 
-		$pagination = array(
+		$pagination = [
 			'start' => ($page - 1) * $iaCore->get('news_number'),
 			'limit' => (int)$iaCore->get('news_number'),
 			'url' => $iaCore->factory('page', iaCore::FRONT)->getUrlByName('news') . '?page={page}'
-		);
+		];
 
 		$order = ('date' == $iaCore->get('news_order')) ? 'ORDER BY `date` DESC' : 'ORDER BY `title` ASC';
 
 		$stmt = '`status` = :status AND `lang` = :language';
-		$iaDb->bind($stmt, array('status' => iaCore::STATUS_ACTIVE, 'language' => $iaView->language));
+		$iaDb->bind($stmt, ['status' => iaCore::STATUS_ACTIVE, 'language' => $iaView->language]);
 
 		$sql =
 			'SELECT SQL_CALC_FOUND_ROWS ' .
@@ -100,13 +100,13 @@ SQL;
 			'WHERE n.' . $stmt . $order . ' ' .
 			'LIMIT :start, :limit';
 
-		$sql = iaDb::printf($sql, array(
+		$sql = iaDb::printf($sql, [
 			'prefix' => $iaDb->prefix,
 			'table_news' => 'news',
 			'table_members' => iaUsers::getTable(),
 			'start' => $pagination['start'],
 			'limit' => $pagination['limit']
-		));
+		]);
 
 		$rows = $iaDb->getAll($sql);
 
