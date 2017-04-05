@@ -1,97 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module type="plugin" name="news">
-	<title>News</title>
-	<summary>Allows to create news section.</summary>
-	<author>Intelliants LLC</author>
-	<contributor>Intelliants LLC</contributor>
-	<version>4.1.0</version>
-	<date>2017-02-09</date>
-	<compatibility>4.1</compatibility>
+    <title>News</title>
+    <summary>Allows to create news section on the website</summary>
+    <author>Intelliants LLC</author>
+    <contributor>Intelliants LLC</contributor>
+    <version>4.1.0</version>
+    <date>2017-03-02</date>
+    <compatibility>4.1</compatibility>
 
-	<actions>
-		<action name="view_news" url="news/" icon="list" pages="news_add,news_edit"><![CDATA[]]></action>
-		<action name="add_news" url="news/add/" icon="plus" pages="news,news_edit"><![CDATA[]]></action>
-		<action type="dashboard_news_add" name="dashboard_news_add" url="news/add/" icon="plus"><![CDATA[]]></action>
-	</actions>
+    <items>
+        <item payable="0">news</item>
+    </items>
 
-	<adminpages>
-		<page group="content" name="news" url="news/" menus="menu" order="50">News</page>
-	</adminpages>
+    <actions>
+        <action name="news" url="news/news/" icon="list" pages="news:add,news:edit"><![CDATA[]]></action>
+        <action name="add_news" url="news/news/add/" icon="plus" pages="news:read,news:edit"><![CDATA[]]></action>
+    </actions>
 
-	<pages>
-		<page menus="main,bottom" name="news" url="news/">News</page>
-	</pages>
+    <adminpages>
+        <page group="content" name="news" url="news/news/" menus="menu">News</page>
+    </adminpages>
 
-	<phrases>
-		<phrase category="admin" key="dashboard_news_add">Add News</phrase>
+    <pages>
+        <page menus="main,bottom" name="news" url="news/">News</page>
+    </pages>
 
-		<phrase category="admin" key="add_news">Add News</phrase>
-		<phrase category="admin" key="alias">Alias</phrase>
-		<phrase category="admin" key="body_is_empty">Body text is empty.</phrase>
-		<phrase category="admin" key="edit_news">Edit News</phrase>
-		<phrase category="admin" key="manage_news">Manage News</phrase>
-		<phrase category="admin" key="news_added">Entry added.</phrase>
+    <fields_groups>
+        <group item="news" name="general" title="General"><![CDATA[]]></group>
+    </fields_groups>
 
-		<phrase category="common" key="news">News</phrase>
-		<phrase category="common" key="view_news">View News</phrase>
+    <fields>
+        <field name="title" item="news" type="text" group="general" length="70" required="1" multilingual="1" adminonly="1">Title</field>
+        <field name="body" item="news" type="textarea" group="general" editor="1" required="1" multilingual="1" adminonly="1">Body</field>
+        <field name="pictures" item="news" type="pictures" group="general" length="5" thumb_width="400" thumb_height="300" width="1200" height="900" prefix="news_" editable="0">Image</field>
+    </fields>
 
-		<phrase category="frontend" key="no_news">Administrator has not posted any news.</phrase>
-		<phrase category="frontend" key="posted">Posted</phrase>
-		<phrase category="frontend" key="view_all_news">View all news</phrase>
-		<phrase category="frontend" key="continue_reading">continue reading</phrase>
-	</phrases>
+    <phrases>
+        <phrase category="admin" key="dashboard_news_add">Add News</phrase>
 
-	<configgroup name="news">News</configgroup>
+        <phrase category="admin" key="add_news">Add News</phrase>
+        <phrase category="admin" key="alias">Alias</phrase>
+        <phrase category="admin" key="body_is_empty">Body text is empty.</phrase>
+        <phrase category="admin" key="edit_news">Edit News</phrase>
+        <phrase category="admin" key="news_added">Entry added.</phrase>
 
-	<config group="news" name="news_plugin" type="divider" value="General">General</config>
-	<config group="news" name="news_number_block" type="text" description="Number of displayed news in Latest News block">3</config>
-	<config group="news" name="news_max_block" type="text" description="Number of chars in short description in Latest News block">100</config>
-	<config group="news" name="news_number" type="text" description="Number of displayed news per page">10</config>
-	<config group="news" name="news_max" type="text" description="Number of chars in short description">200</config>
-	<config group="news" name="news_order" type="select" values="alphabetic,date" description="News on News Page order by">date</config>
+        <phrase category="common" key="news">News</phrase>
+        <phrase category="common" key="view_news">View News</phrase>
 
-	<config group="news" name="news_newsline_block" type="divider" value="Newsline block">Newsline block</config>
-	<config group="news" name="newsline_row_count" type="select" values="2,3,4" description="Number of displayed news in a row (columns)">3</config>
-	<config group="news" name="newsline_rows" type="select" values="1,2,3,4,5" description="Number of rows">1</config>
-	<config group="news" name="newsline_body_max" type="text" description="Number of chars in short description">300</config>
-	<config group="news" name="newsline_display_img" type="radio" values="1,0" description="Display images">0</config>
+        <phrase category="frontend" key="no_news">Administrator has not posted any news.</phrase>
+        <phrase category="frontend" key="posted">Posted</phrase>
+        <phrase category="frontend" key="view_all_news">View all news</phrase>
+        <phrase category="frontend" key="continue_reading">continue reading</phrase>
+    </phrases>
 
-	<blocks>
-		<block title="Latest News" name="latest_news" collapsible="1" position="left" type="smarty" classname="" filename="block.latest_news"><![CDATA[]]></block>
-		<block title="Newsline" name="newsline" position="verybottom" type="smarty" classname="" filename="block.newsline"><![CDATA[]]></block>
-	</blocks>
+    <configgroup name="news">News</configgroup>
 
-	<hooks>
-		<hook name="phpCoreBeforePageDisplay" page_type="front" filename="hook.blocks-load"><![CDATA[]]></hook>
-		<hook name="adminDashboardStatistics" page_type="admin"><![CDATA[$items['news:news'] = 'plugin';]]></hook>
-	</hooks>
+    <config group="news" name="news_plugin" type="divider" value="General">General</config>
+    <config group="news" name="news_number_block" type="text" description="Number of displayed news in Latest News block">3</config>
+    <config group="news" name="news_max_block" type="text" description="Number of chars in short description in Latest News block">100</config>
+    <config group="news" name="news_number" type="text" description="Number of displayed news per page">10</config>
+    <config group="news" name="news_max" type="text" description="Number of chars in short description">200</config>
+    <config group="news" name="news_order" type="select" values="alphabetic,date" description="News on News Page order by">date</config>
 
-	<install>
-		<sql>
-			<![CDATA[
+    <config group="news" name="news_newsline_block" type="divider" value="Newsline block">Newsline block</config>
+    <config group="news" name="newsline_row_count" type="select" values="2,3,4" description="Number of displayed news in a row (columns)">3</config>
+    <config group="news" name="newsline_rows" type="select" values="1,2,3,4,5" description="Number of rows">1</config>
+    <config group="news" name="newsline_body_max" type="text" description="Number of chars in short description">300</config>
+    <config group="news" name="newsline_display_img" type="radio" values="1,0" description="Display images">0</config>
+
+    <blocks>
+        <block title="Latest News" name="latest_news" collapsible="1" position="left" type="smarty" classname="" filename="block.latest_news"><![CDATA[]]></block>
+        <block title="Newsline" name="newsline" position="verybottom" type="smarty" classname="" filename="block.newsline"><![CDATA[]]></block>
+    </blocks>
+
+    <hooks>
+        <hook name="phpCoreBeforePageDisplay" page_type="front" filename="hook.blocks-load"><![CDATA[]]></hook>
+        <hook name="adminDashboardStatistics" page_type="admin"><![CDATA[$items['news'] = 'plugin';]]></hook>
+    </hooks>
+
+    <install>
+        <sql>
+            <![CDATA[
 CREATE TABLE `{prefix}news` (
-	`id` mediumint(7) unsigned NOT NULL auto_increment,
-	`member_id` int(11) unsigned NOT NULL,
-	`lang` char(2) NOT NULL,
-	`status` enum('inactive', 'active') NOT NULL default 'active',
-	`date` datetime NOT NULL,
-	`alias` varchar(50) NOT NULL,
-	`title` varchar(150) NOT NULL,
-	`body` text NOT NULL,
-	`image` tinytext NOT NULL,
-	PRIMARY KEY  (`id`),
-	KEY `LANGUAGE` (`lang`),
-	FULLTEXT KEY `SEARCH` (`title`, `body`)
+    `id` mediumint(7) unsigned NOT NULL auto_increment,
+    `member_id` int(11) unsigned NOT NULL,
+    `alias` varchar(50) NOT NULL,
+    `date_added` datetime,
+    `date_modified` datetime,
+    `status` enum('inactive', 'active') NOT NULL default 'active',
+    `views_num` mediumint(8) unsigned NOT NULL default 0,
+    `featured` tinyint(1) unsigned NOT NULL default 0,
+    `featured_start` datetime NULL,
+    `featured_end` datetime NULL,
+    PRIMARY KEY  (`id`)
 ) {mysql_version};
-			]]>
-		</sql>
-	</install>
+            ]]>
+        </sql>
+    </install>
 
-	<uninstall>
-		<sql>
-			<![CDATA[
+    <uninstall>
+        <sql>
+            <![CDATA[
 DROP TABLE IF EXISTS `{prefix}news`;
-			]]>
-		</sql>
-	</uninstall>
+            ]]>
+        </sql>
+    </uninstall>
 </module>

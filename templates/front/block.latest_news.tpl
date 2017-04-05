@@ -6,7 +6,7 @@
 					{ia_image file=$entry.image width=50 title=$entry.title class='media-object'}
 				</a>
 				<div class="media-body">
-					<h5 class="media-heading"><a href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.alias}">{$entry.title|escape:'html'}</a></h5>
+					<h5 class="media-heading"><a href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.alias}">{$entry.title|escape}</a></h5>
 					<p>{$entry.body|strip_tags|truncate:$core.config.news_max_block:'...'}</p>
 				</div>
 			</div>

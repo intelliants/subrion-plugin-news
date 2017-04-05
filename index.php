@@ -24,99 +24,92 @@
  *
  ******************************************************************************/
 
-if (iaView::REQUEST_HTML == $iaView->getRequestType())
-{
-	$iaDb->setTable('news');
+if (iaView::REQUEST_HTML == $iaView->getRequestType()) {
+    $iaDb->setTable('news');
 
-	if (isset($iaCore->requestPath[0]))
-	{
-		$id = (int)$iaCore->requestPath[0];
+    if (isset($iaCore->requestPath[0])) {
+        $id = (int)$iaCore->requestPath[0];
 
-		if (!$id)
-		{
-			return iaView::errorPage(iaView::ERROR_NOT_FOUND);
-		}
+        if (!$id) {
+            return iaView::errorPage(iaView::ERROR_NOT_FOUND);
+        }
 
-		$sql = <<<SQL
+        $sql = <<<SQL
 SELECT SQL_CALC_FOUND_ROWS n.`id`, n.`title`, n.`date`, n.`body`, n.`alias`, n.`image`, m.`fullname` 
 	FROM `:prefix:table_news` n 
 LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) 
 WHERE n.`id` = :id AND n.`status` = ':status'
 SQL;
-		$sql = iaDb::printf($sql, [
-			'prefix' => $iaDb->prefix,
-			'table_news' => 'news',
-			'table_members' => iaUsers::getTable(),
-			'id' => $id,
-			'status' => iaCore::STATUS_ACTIVE
-		]);
+        $sql = iaDb::printf($sql, [
+            'prefix' => $iaDb->prefix,
+            'table_news' => 'news',
+            'table_members' => iaUsers::getTable(),
+            'id' => $id,
+            'status' => iaCore::STATUS_ACTIVE
+        ]);
 
-		$entry = $iaDb->getRow($sql);
+        $entry = $iaDb->getRow($sql);
 
-		if (empty($entry))
-		{
-			return iaView::errorPage(iaView::ERROR_NOT_FOUND);
-		}
+        if (empty($entry)) {
+            return iaView::errorPage(iaView::ERROR_NOT_FOUND);
+        }
 
-		iaBreadcrumb::toEnd($entry['title'], IA_SELF);
-		$openGraph = [
-			'title' => $entry['title'],
-			'url' => IA_SELF,
-			'description' => $entry['body']
-		];
+        iaBreadcrumb::toEnd($entry['title'], IA_SELF);
+        $openGraph = [
+            'title' => $entry['title'],
+            'url' => IA_SELF,
+            'description' => $entry['body']
+        ];
 
-		if ($entry['image'])
-		{
-			$openGraph['image'] = IA_CLEAR_URL . 'uploads/' . $entry['image'];
-		}
+        if ($entry['image']) {
+            $openGraph['image'] = IA_CLEAR_URL . 'uploads/' . $entry['image'];
+        }
 
-		$iaView->set('og', $openGraph);
+        $iaView->set('og', $openGraph);
 
-		$iaView->assign('entry', $entry);
+        $iaView->assign('entry', $entry);
 
-		$iaView->title(iaSanitize::tags($entry['title']));
-	}
-	else
-	{
-		$page = empty($_GET['page']) ? 0 : (int)$_GET['page'];
-		$page = ($page < 1) ? 1 : $page;
+        $iaView->title(iaSanitize::tags($entry['title']));
+    } else {
+        $page = empty($_GET['page']) ? 0 : (int)$_GET['page'];
+        $page = ($page < 1) ? 1 : $page;
 
-		$pagination = [
-			'start' => ($page - 1) * $iaCore->get('news_number'),
-			'limit' => (int)$iaCore->get('news_number'),
-			'url' => $iaCore->factory('page', iaCore::FRONT)->getUrlByName('news') . '?page={page}'
-		];
+        $pagination = [
+            'start' => ($page - 1) * $iaCore->get('news_number'),
+            'limit' => (int)$iaCore->get('news_number'),
+            'url' => $iaCore->factory('page', iaCore::FRONT)->getUrlByName('news') . '?page={page}'
+        ];
 
-		$order = ('date' == $iaCore->get('news_order')) ? 'ORDER BY `date` DESC' : 'ORDER BY `title` ASC';
+        $order = ('date' == $iaCore->get('news_order')) ? 'ORDER BY `date` DESC' : 'ORDER BY `title` ASC';
 
-		$stmt = '`status` = :status AND `lang` = :language';
-		$iaDb->bind($stmt, ['status' => iaCore::STATUS_ACTIVE, 'language' => $iaView->language]);
+        $stmt = '`status` = :status AND `lang` = :language';
+        $iaDb->bind($stmt, ['status' => iaCore::STATUS_ACTIVE, 'language' => $iaView->language]);
 
-		$sql =
-			'SELECT SQL_CALC_FOUND_ROWS ' .
-				'n.`id`, n.`title`, n.`date`, n.`body`, n.`alias`, n.`image`, m.`fullname` ' .
-			'FROM `:prefix:table_news` n ' .
-			'LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) ' .
-			'WHERE n.' . $stmt . $order . ' ' .
-			'LIMIT :start, :limit';
+        $sql =
+            'SELECT SQL_CALC_FOUND_ROWS ' .
+                'n.`id`, n.`title`, n.`date`, n.`body`, n.`alias`, n.`image`, m.`fullname` ' .
+            'FROM `:prefix:table_news` n ' .
+            'LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) ' .
+            'WHERE n.' . $stmt . $order . ' ' .
+            'LIMIT :start, :limit';
 
-		$sql = iaDb::printf($sql, [
-			'prefix' => $iaDb->prefix,
-			'table_news' => 'news',
-			'table_members' => iaUsers::getTable(),
-			'start' => $pagination['start'],
-			'limit' => $pagination['limit']
-		]);
+        $sql = iaDb::printf($sql, [
+            'prefix' => $iaDb->prefix,
+            'table_news' => 'news',
+            'table_members' => iaUsers::getTable(),
+            'start' => $pagination['start'],
+            'limit' => $pagination['limit']
+        ]);
 
-		$rows = $iaDb->getAll($sql);
+        $rows = $iaDb->getAll($sql);
 
-		$pagination['total'] = $iaDb->foundRows();
+        $pagination['total'] = $iaDb->foundRows();
 
-		$iaView->assign('news', $rows);
-		$iaView->assign('pagination', $pagination);
-	}
+        $iaView->assign('news', $rows);
+        $iaView->assign('pagination', $pagination);
+    }
 
-	$iaView->display('index');
+    $iaView->display('index');
 
-	$iaDb->resetTable();
+    $iaDb->resetTable();
 }

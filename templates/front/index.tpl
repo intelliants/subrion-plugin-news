@@ -32,9 +32,9 @@
 					{/if}
 					<div class="media-body">
 						<h4 class="media-heading">
-							<a href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.alias}">{$entry.title|escape:'html'}</a>
+							<a href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.alias}">{$entry.title|escape}</a>
 						</h4>
-						<p class="text-fade-50">{lang key='posted_on'} {$entry.date|date_format:$core.config.date_format} {lang key='by'} {$entry.fullname|escape:'html'}</p>
+						<p class="text-fade-50">{lang key='posted_on'} {$entry.date|date_format:$core.config.date_format} {lang key='by'} {$entry.fullname|escape}</p>
 						<div class="ia-item__content">{$entry.body|strip_tags|truncate:$core.config.news_max:'...'}</div>
 					</div>
 				</div>

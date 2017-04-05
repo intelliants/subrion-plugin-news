@@ -24,43 +24,20 @@
  *
  ******************************************************************************/
 
-if (iaView::REQUEST_HTML == $iaView->getRequestType())
-{
-	if (iaView::REQUEST_HTML == $iaView->getRequestType())
-	{
-		if ($iaView->blockExists('latest_news'))
-		{
-			$stmt = '`status` = :status AND `lang` = :language ORDER BY `date` DESC';
-			$iaDb->bind($stmt, ['status' => iaCore::STATUS_ACTIVE, 'language' => $iaView->language]);
+if (iaView::REQUEST_HTML == $iaView->getRequestType()) {
+    $iaNews = $iaCore->factoryModule('news', 'news');
 
-			$array = $iaDb->all(['id', 'title', 'date', 'alias', 'body', 'image'], $stmt, 0, $iaCore->get('news_number_block'), 'news');
-			$iaView->assign('news_latest', $array);
-		}
+    // TODO: make one query to db
+    $news_count = $iaCore->get('newsline_row_count') * $iaCore->get('newsline_rows');
+    $limit = max($iaCore->get('news_number_block'), $news_count);
 
-		if ($iaView->blockExists('newsline'))
-		{
-			$news_count = $iaCore->get('newsline_row_count') * $iaCore->get('newsline_rows');
+    if ($iaView->blockExists('latest_news')) {
+        $news = $iaNews->get($stmt, 0, $iaCore->get('news_number_block'));
+        $iaView->assign('news_latest', $array);
+    }
 
-			$sql = <<<SQL
-SELECT SQL_CALC_FOUND_ROWS n.`id`, n.`title`, n.`date`, n.`body`, n.`alias`, n.`image`, m.`fullname` 
-	FROM `:prefix:table_news` n 
-LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) 
-WHERE n.`status` = ':status' && `lang` = ':language'
-ORDER BY `date` DESC
-LIMIT :start, :limit
-SQL;
-			$sql = iaDb::printf($sql, [
-				'prefix' => $iaDb->prefix,
-				'table_news' => 'news',
-				'table_members' => iaUsers::getTable(),
-				'status' => iaCore::STATUS_ACTIVE,
-				'language' => $iaView->language,
-				'start' => 0,
-				'limit' => $news_count
-			]);
-			$array = $iaDb->getAll($sql);
-
-			$iaView->assign('newsline', $array);
-		}
-	}
+    if ($iaView->blockExists('newsline')) {
+        $news = $iaNews->get('1 = 1', 0, $news_count);
+        $iaView->assign('newsline', $array);
+    }
 }

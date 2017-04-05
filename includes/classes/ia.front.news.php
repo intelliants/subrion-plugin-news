@@ -24,12 +24,34 @@
  *
  ******************************************************************************/
 
-class iaNews extends abstractModuleAdmin
+class iaNews extends abstractModuleFront
 {
     protected static $_table = 'news';
+
     protected $_itemName = 'news';
 
-    protected $_activityLog = ['item' => 'news'];
+    public $coreSearchEnabled = true;
+    public $coreSearchOptions = [
+        'tableAlias' => 'n',
+        'regularSearchFields' => ['title', 'body'],
+    ];
 
-    public $dashboardStatistics = ['_format' => 'small', 'icon' => 'folder', 'url' => 'news/news/'];
+
+    public function get($where, $start = null, $limit = null)
+    {
+        $sql = 'SELECT SQL_CALC_FOUND_ROWS n.*, m.`fullname` '
+            . 'FROM `' . self::getTable(true) . '`  n '
+            . 'LEFT JOIN `:table_members` m ON (n.`member_id` = m.`id`)'
+            . 'WHERE ' . ($where ? $where . ' AND' : '') . "  n.`status` = 'active' "
+            . 'ORDER BY n.`date_modified` DESC '
+            . ($start || $limit ? "LIMIT $start, $limit" : '');
+        $sql = iaDb::printf($sql, [
+            'table_members' => iaUsers::getTable(true),
+        ]);
+
+        $rows = $this->iaDb->getAll($sql);
+        $this->_processValues($rows);
+
+        return $rows;
+    }
 }

@@ -26,183 +26,48 @@
 
 class iaBackendController extends iaAbstractControllerModuleBackend
 {
-	protected $_name = 'news';
+    protected $_name = 'news';
+    protected $_path = 'news';
+    protected $_itemName = 'news';
 
-	protected $_gridFilters = ['status' => 'equal'];
-	protected $_gridQueryMainTableAlias = 'n';
+    protected $_helperName = 'news';
+
+    protected $_gridColumns = ['title', 'body', 'date_added', 'date_modified', 'status'];
+    protected $_gridFilters = ['status' => self::EQUAL];
+
+    protected $_activityLog = ['item' => 'news'];
 
 
-	public function __construct()
-	{
-		parent::__construct();
+    protected function _modifyGridParams(&$conditions, &$values, array $params)
+    {
+        if (!empty($params['text'])) {
+            $langCode = $this->_iaCore->language['iso'];
+            $conditions[] = "(`title_{$langCode}` LIKE :text OR `body_{$langCode}` LIKE :text)";
+            $values['text'] = '%' . iaSanitize::sql($params['text']) . '%';
+        }
+    }
 
-		$iaNews = $this->_iaCore->factoryPlugin($this->getModuleName(), iaCore::ADMIN, $this->getName());
-		$this->setHelper($iaNews);
-	}
+    protected function _setDefaultValues(array &$entry)
+    {
+        $entry = [
+            'featured' => false,
+            'status' => iaCore::STATUS_ACTIVE,
+            'member_id' => iaUsers::getIdentity()->id,
+        ];
+    }
 
-	protected function _indexPage(&$iaView)
-	{
-		$iaView->grid('_IA_URL_modules/' . $this->getModuleName() . '/js/admin/index');
-	}
+    protected function _entryUpdate(array $entryData, $entryId)
+    {
+        $entryData['date_modified'] = date(iaDb::DATETIME_FORMAT);
 
-	protected function _modifyGridParams(&$conditions, &$values, array $params)
-	{
-		if (!empty($_GET['text']))
-		{
-			$conditions[] = '(n.`title` LIKE :text OR n.`body` LIKE :text)';
-			$values['text'] = '%' . iaSanitize::sql($_GET['text']) . '%';
-		}
+        return parent::_entryUpdate($entryData, $entryId);
+    }
 
-		if (!empty($params['owner']))
-		{
-			$conditions[] = '(m.`fullname` LIKE :owner OR m.`username` LIKE :owner)';
-			$values['owner'] = '%' . iaSanitize::sql($params['owner']) . '%';
-		}
-	}
+    protected function _entryAdd(array $entryData)
+    {
+        $entryData['date_added'] = date(iaDb::DATETIME_FORMAT);
+        $entryData['date_modified'] = date(iaDb::DATETIME_FORMAT);
 
-	protected function _gridQuery($columns, $where, $order, $start, $limit)
-	{
-		$sql = <<<SQL
-SELECT SQL_CALC_FOUND_ROWS n.`id`, n.`title`, n.`alias`, n.`date`, n.`status`, m.`fullname` `owner`, 1 `update`, 1 `delete` 
-	FROM `:prefix:table_news` n 
-LEFT JOIN `:prefix:table_members` m ON (n.`member_id` = m.`id`) 
-WHERE :where :order 
-LIMIT :start, :limit
-SQL;
-		$sql = iaDb::printf($sql, [
-			'prefix' => $this->_iaDb->prefix,
-			'table_news' => $this->getTable(),
-			'table_members' => iaUsers::getTable(),
-			'where' => $where,
-			'order' => $order,
-			'start' => $start,
-			'limit' => $limit
-		]);
-
-		return $this->_iaDb->getAll($sql);
-	}
-
-	protected function _gridRead($params)
-	{
-		return (isset($params['get']) && 'alias' == $params['get'])
-			? ['url' => IA_URL . 'news' . IA_URL_DELIMITER . $this->_iaDb->getNextId() . '-' . $this->getHelper()->titleAlias($params['title'])]
-			: parent::_gridRead($params);
-	}
-
-	protected function _setDefaultValues(array &$entry)
-	{
-		$entry['title'] = $entry['body'] = '';
-		$entry['lang'] = $this->_iaCore->iaView->language;
-		$entry['date'] = date(iaDb::DATETIME_FORMAT);
-		$entry['status'] = iaCore::STATUS_ACTIVE;
-		$entry['member_id'] = iaUsers::getIdentity()->id;
-	}
-
-	protected function _entryDelete($id)
-	{
-		$result = false;
-		$stmt = iaDb::convertIds($id);
-		if ($row = $this->_iaDb->row(['title', 'image'], $stmt))
-		{
-			$result = (bool)$this->_iaDb->delete($stmt);
-
-			if ($row['image'] && $result) // we have to remove the assigned image as well
-			{
-				$iaPicture = $this->_iaCore->factory('picture');
-				$iaPicture->delete($row['image']);
-			}
-
-			if ($result)
-			{
-				$this->_iaCore->factory('log')->write(iaLog::ACTION_DELETE, ['item' => 'news', 'name' => $row['title'], 'id' => (int)$id]);
-			}
-		}
-
-		return $result;
-	}
-
-	protected function _preSaveEntry(array &$entry, array $data, $action)
-	{
-		parent::_preSaveEntry($entry, $data, $action);
-
-		iaUtil::loadUTF8Functions('ascii', 'validation', 'bad', 'utf8_to_ascii');
-
-		if (!utf8_is_valid($entry['title']))
-		{
-			$entry['title'] = utf8_bad_replace($entry['title']);
-		}
-		if (empty($entry['title']))
-		{
-			$this->addMessage('title_is_empty');
-		}
-
-		if (!utf8_is_valid($entry['body']))
-		{
-			$entry['body'] = utf8_bad_replace($entry['body']);
-		}
-		if (empty($entry['body']))
-		{
-			$this->addMessage('body_is_empty');
-		}
-
-		if (empty($entry['date']))
-		{
-			$entry['date'] = date(iaDb::DATETIME_FORMAT);
-		}
-
-		$entry['alias'] = $this->getHelper()->titleAlias(empty($entry['alias']) ? $entry['title'] : $entry['alias']);
-
-		if (!$this->getMessages())
-		{
-			if (isset($_FILES['image']['error']) && !$_FILES['image']['error'])
-			{
-				try
-				{
-					$iaField = $this->_iaCore->factory('field');
-
-					$path = $iaField->uploadImage($_FILES['image'], 800, 600, 250, 250, 'crop');
-
-					empty($entry['image']) || $iaField->deleteUploadedFile('image', $this->getTable(), $this->getEntryId(), $entry['image']);
-					$entry['image'] = $path;
-				}
-				catch (Exception $e)
-				{
-					$this->addMessage($e->getMessage(), false);
-				}
-			}
-		}
-
-		unset($entry['owner']);
-
-		return !$this->getMessages();
-	}
-
-	protected function _postSaveEntry(array &$entry, array $data, $action)
-	{
-		$iaLog = $this->_iaCore->factory('log');
-
-		$actionCode = (iaCore::ACTION_ADD == $action) ? iaLog::ACTION_CREATE : iaLog::ACTION_UPDATE;
-		$params = [
-			'module' => 'news',
-			'item' => 'news',
-			'name' => $entry['title'],
-			'id' => $this->getEntryId()
-		];
-
-		$iaLog->write($actionCode, $params);
-	}
-
-	protected function _assignValues(&$iaView, array &$entryData)
-	{
-		$iaUsers = $this->_iaCore->factory('users');
-		$owner = empty($entryData['member_id']) ? iaUsers::getIdentity(true) :  $iaUsers->getInfo($entryData['member_id']);
-
-		$entryData['owner'] = $owner['fullname'] . " ({$owner['email']})";
-	}
-
-	protected function _setPageTitle(&$iaView, array $entryData, $action)
-	{
-		$iaView->title(iaLanguage::get($action . '_' . $this->getName(), $iaView->title()));
-	}
-
+        return parent::_entryAdd($entryData);
+    }
 }
