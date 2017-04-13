@@ -35,7 +35,13 @@
                             <a href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.alias}">{$entry.title|escape}</a>
                         </h4>
                         <p class="text-fade-50">{lang key='posted_on'} {$entry.date_added|date_format:$core.config.date_format} {lang key='by'} {$entry.fullname|escape}</p>
-                        <div class="ia-item__content">{$entry.body|strip_tags|truncate:$core.config.news_max:'...'}</div>
+                        <div class="ia-item__content">
+                            {if !empty($entry.summary)}
+                                {$entry.summary|truncate:$core.config.news_max_block:'...'}
+                            {else}
+                                {$entry.body|strip_tags|truncate:$core.config.news_max_block:'...'}
+                            {/if}
+                        </div>
                     </div>
                 </div>
             {/foreach}

@@ -31,6 +31,7 @@
 
     <fields>
         <field name="title" item="news" type="text" group="general" length="70" required="1" multilingual="1" adminonly="1">Title</field>
+        <field name="summary" item="news" type="textarea" group="general" editor="0" required="0" multilingual="1" adminonly="1">Summary</field>
         <field name="body" item="news" type="textarea" group="general" editor="1" required="1" multilingual="1" adminonly="1">Body</field>
         <field name="pictures" item="news" type="pictures" group="general" length="5" thumb_width="400" thumb_height="300" width="1200" height="900" prefix="news_" editable="0">Image</field>
     </fields>

@@ -32,12 +32,12 @@ if (iaView::REQUEST_HTML == $iaView->getRequestType()) {
     $limit = max($iaCore->get('news_number_block'), $news_count);
 
     if ($iaView->blockExists('latest_news')) {
-        $news = $iaNews->get($stmt, 0, $iaCore->get('news_number_block'));
-        $iaView->assign('news_latest', $array);
+        $news = $iaNews->get(iaDb::EMPTY_CONDITION, 0, $iaCore->get('news_number_block'));
+        $iaView->assign('news_latest', $news);
     }
 
     if ($iaView->blockExists('newsline')) {
-        $news = $iaNews->get('1 = 1', 0, $news_count);
-        $iaView->assign('newsline', $array);
+        $news = $iaNews->get(iaDb::EMPTY_CONDITION, 0, $news_count);
+        $iaView->assign('newsline', $news);
     }
 }
