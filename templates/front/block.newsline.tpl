@@ -17,7 +17,7 @@
                             <p class="text-fade-50">{$entry.date_added|date_format:$core.config.date_format} {lang key='by'} {$entry.fullname|escape}</p>
                             <p>
                                 {if !empty($entry.summary)}
-                                    {$entry.summary|truncate:$core.config.news_max_block:'...'}
+                                    {$entry.summary}
                                 {else}
                                     {$entry.body|strip_tags|truncate:$core.config.news_max_block:'...'}
                                 {/if}
