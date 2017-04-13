@@ -28,7 +28,7 @@
             {foreach $news as $entry}
                 <div class="media ia-item">
                     {if !empty($entry.pictures)}
-                        <a href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.alias}" class="pull-left">{ia_image file=$entry.pictures[0] width=150 title=$entry.title class='media-object'}</a>
+                        <a href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.alias}" class="pull-left">{ia_image file=$entry.pictures[0] type='thumbnail' width=150 title=$entry.title class='media-object'}</a>
                     {/if}
                     <div class="media-body">
                         <h4 class="media-heading">

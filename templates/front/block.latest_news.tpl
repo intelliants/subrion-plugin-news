@@ -4,7 +4,7 @@
             <div class="media ia-item ia-item--border-bottom">
                 {if !empty($entry.pictures)}
                     <a class="pull-left" href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.alias}">
-                        {ia_image file=$entry.pictures[0] width=50 title=$entry.title class='media-object'}
+                        {ia_image file=$entry.pictures[0] width=50 type='thumbnail' title=$entry.title class='media-object'}
                     </a>
                 {/if}
                 <div class="media-body">

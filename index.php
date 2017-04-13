@@ -36,7 +36,13 @@ if (iaView::REQUEST_HTML == $iaView->getRequestType()) {
             return iaView::errorPage(iaView::ERROR_NOT_FOUND);
         }
 
+        $iaUsers = $this->factory('users');
+
         $entry = $iaNews->getById($id);
+
+        $member = $iaUsers->getById($entry['member_id']);
+        $entry['fullname'] = $member['fullname'];
+
         if (empty($entry)) {
             return iaView::errorPage(iaView::ERROR_NOT_FOUND);
         }
