@@ -32,4 +32,16 @@ class iaNews extends abstractModuleAdmin
     protected $_activityLog = ['item' => 'news'];
 
     public $dashboardStatistics = ['_format' => 'small', 'icon' => 'folder', 'url' => 'news/news/'];
+
+    private $_urlPatterns = [
+        'view' => ':basenews/:id-:slug.html',
+    ];
+
+
+    public function url($action, $params)
+    {
+        $params['base'] = IA_URL_DELIMITER != $this->getInfo('url') ? $this->getInfo('url') : '';
+
+        return iaDb::printf($this->_urlPatterns[$action], $params);
+    }
 }

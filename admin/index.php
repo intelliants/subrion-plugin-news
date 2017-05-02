@@ -35,6 +35,8 @@ class iaBackendController extends iaAbstractControllerModuleBackend
     protected $_gridColumns = ['title', 'body', 'date_added', 'date_modified', 'status'];
     protected $_gridFilters = ['status' => self::EQUAL];
 
+    protected $_tooltipsEnabled = true;
+
     protected $_activityLog = ['item' => 'news'];
 
 
@@ -50,10 +52,18 @@ class iaBackendController extends iaAbstractControllerModuleBackend
     protected function _setDefaultValues(array &$entry)
     {
         $entry = [
+            'slug' => '',
             'featured' => false,
             'status' => iaCore::STATUS_ACTIVE,
             'member_id' => iaUsers::getIdentity()->id,
         ];
+    }
+    protected function _preSaveEntry(array &$entry, array $data, $action)
+    {
+        parent::_preSaveEntry($entry, $data, $action);
+
+//        $entry['slug'] = empty($data['slug']) ? $data['title'][iaLanguage::getMasterLanguage()->code] : $data['slug'];
+//        $entry['slug'] = $this->getHelper()->getSlug($entry);
     }
 
     protected function _entryUpdate(array $entryData, $entryId)
@@ -69,5 +79,17 @@ class iaBackendController extends iaAbstractControllerModuleBackend
         $entryData['date_modified'] = date(iaDb::DATETIME_FORMAT);
 
         return parent::_entryAdd($entryData);
+    }
+
+    protected function _getJsonSlug(array $data)
+    {
+        $title = iaSanitize::slug(isset($data['title']) ? $data['title'] : '', isset($data['slug']));
+
+        $slug = $this->getHelper()->url('view', [
+            'id' => empty($data['id']) ? $this->_iaDb->getNextId() : $data['id'],
+            'slug' => $title,
+        ]);
+
+        return ['data' => $slug];
     }
 }

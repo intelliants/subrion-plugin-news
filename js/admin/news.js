@@ -57,25 +57,26 @@ Ext.onReady(function () {
 
         intelli.news.init();
     }
-    else {
-        $('#input-title, #input-alias').on('blur', function () {
-            var alias = $('#input-alias').val();
-            var title = alias != '' ? alias : $('#input-title').val();
 
-            if ('' != title) {
-                $.get(pageUrl + 'read.json', {get: 'alias', title: title}, function (data) {
-                    if ('' != data.url) {
-                        $('#title_url').text(data.url);
-                        $('#title_box').fadeIn();
-                    }
-                    else {
-                        $('#title_box').hide();
-                    }
-                });
-            }
-            else {
-                $('#title_box').hide();
-            }
-        });
-    }
+    intelli.titleCache = '';
+    intelli.fillUrlBox = function () {
+        var slug = $('#field_title_slug').val();
+        var title = ('' == slug ? $('input:first', '#title_fieldzone').val() : slug);
+        var cache = title + '%%';
+
+        if ('' !== title && intelli.titleCache != cache) {
+            $.get(pageUrl + 'slug.json', {title: title}, function (response) {
+                if ('' !== response.data) {
+                    $('#title_url').text(response.data);
+                    $('#title_box').fadeIn();
+                }
+            });
+        }
+
+        intelli.titleCache = cache;
+    };
+
+    $(function () {
+        $('#title_fieldzone input:first, #field_title_slug').blur(intelli.fillUrlBox).blur();
+    });
 });

@@ -5,7 +5,7 @@
     <author>Intelliants LLC</author>
     <contributor>Intelliants LLC</contributor>
     <version>4.1.0</version>
-    <date>2017-03-02</date>
+    <date>2017-05-02</date>
     <compatibility>4.1</compatibility>
 
     <items>
@@ -40,7 +40,6 @@
         <phrase category="admin" key="dashboard_news_add">Add News</phrase>
 
         <phrase category="admin" key="add_news">Add News</phrase>
-        <phrase category="admin" key="alias">Alias</phrase>
         <phrase category="admin" key="body_is_empty">Body text is empty.</phrase>
         <phrase category="admin" key="edit_news">Edit News</phrase>
         <phrase category="admin" key="news_added">Entry added.</phrase>
@@ -85,7 +84,7 @@
 CREATE TABLE `{prefix}news` (
     `id` mediumint(7) unsigned NOT NULL auto_increment,
     `member_id` int(11) unsigned NOT NULL,
-    `alias` varchar(50) NOT NULL,
+    `slug` varchar(50) NOT NULL,
     `date_added` datetime,
     `date_modified` datetime,
     `status` enum('inactive', 'active') NOT NULL default 'active',
