@@ -3,12 +3,12 @@
         {foreach $news_latest as $entry}
             <div class="media ia-item ia-item--border-bottom">
                 {if !empty($entry.pictures)}
-                    <a class="pull-left" href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.slug}">
+                    <a class="pull-left" href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.slug}.html">
                         {ia_image file=$entry.pictures[0] width=50 type='thumbnail' title=$entry.title class='media-object'}
                     </a>
                 {/if}
                 <div class="media-body">
-                    <h5 class="media-heading"><a href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.slug}">{$entry.title|escape}</a></h5>
+                    <h5 class="media-heading"><a href="{$smarty.const.IA_URL}news/{$entry.id}-{$entry.slug}.html">{$entry.title|escape}</a></h5>
                     {if !empty($entry.summary)}
                         <p>{$entry.summary}</p>
                     {else}

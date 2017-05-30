@@ -1,6 +1,8 @@
 <form method="post" enctype="multipart/form-data" class="sap-form form-horizontal">
     {preventCsrf}
 
+    <input type="hidden" name="id" value="{if isset($item.id)}{$item.id}{/if}">
+
     {capture name='title' append='field_after'}
         <div id="title_slug" class="row">
             <label for="" class="col col-lg-2 control-label">{lang key='slug'} <a href="#" class="js-tooltip" title="{$tooltips.slug_literal}"><i class="i-info"></i></a></label>

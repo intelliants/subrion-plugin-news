@@ -60,19 +60,20 @@ Ext.onReady(function () {
 
     intelli.titleCache = '';
     intelli.fillUrlBox = function () {
+        var id = $('input[name="id"]').val();
         var slug = $('#field_title_slug').val();
         var title = ('' == slug ? $('input:first', '#title_fieldzone').val() : slug);
         var cache = title + '%%';
 
         if ('' !== title && intelli.titleCache != cache) {
-            $.get(pageUrl + 'slug.json', {title: title}, function (response) {
+            $.get(pageUrl + 'slug.json', {id: id, title: title}, function (response) {
                 if ('' !== response.data) {
                     $('#title_url').text(response.data);
                     $('#title_box').fadeIn();
                 }
             });
         }
-
+console.log(id);
         intelli.titleCache = cache;
     };
 

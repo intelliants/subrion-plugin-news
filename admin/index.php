@@ -62,8 +62,13 @@ class iaBackendController extends iaAbstractControllerModuleBackend
     {
         parent::_preSaveEntry($entry, $data, $action);
 
-//        $entry['slug'] = empty($data['slug']) ? $data['title'][iaLanguage::getMasterLanguage()->code] : $data['slug'];
-//        $entry['slug'] = $this->getHelper()->getSlug($entry);
+        if (empty($data['title_slug'])) {
+            $entry['slug'] = iaSanitize::slug($data['title'][iaLanguage::getMasterLanguage()->code]);
+        } else {
+            $entry['slug'] = $data['title_slug'];
+        }
+
+        return !$this->getMessages();
     }
 
     protected function _entryUpdate(array $entryData, $entryId)
@@ -83,7 +88,7 @@ class iaBackendController extends iaAbstractControllerModuleBackend
 
     protected function _getJsonSlug(array $data)
     {
-        $title = iaSanitize::slug(isset($data['title']) ? $data['title'] : '', isset($data['slug']));
+        $title = iaSanitize::slug(isset($data['title']) ? $data['title'] : '');
 
         $slug = $this->getHelper()->url('view', [
             'id' => empty($data['id']) ? $this->_iaDb->getNextId() : $data['id'],
@@ -91,5 +96,12 @@ class iaBackendController extends iaAbstractControllerModuleBackend
         ]);
 
         return ['data' => $slug];
+    }
+
+    protected function _assignValues(&$iaView, array &$entryData)
+    {
+        $entryData['id'] = $this->getEntryId();
+
+        return parent::_assignValues($iaView, $entryData);
     }
 }
