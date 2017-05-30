@@ -73,7 +73,7 @@ Ext.onReady(function () {
                 }
             });
         }
-console.log(id);
+
         intelli.titleCache = cache;
     };
 
