@@ -75,7 +75,7 @@
 
     <hooks>
         <hook name="phpCoreBeforePageDisplay" page_type="front" filename="hook.blocks-load"><![CDATA[]]></hook>
-        <hook name="adminDashboardStatistics" page_type="admin"><![CDATA[$items['news'] = 'plugin';]]></hook>
+        <hook name="adminDashboardStatistics" page_type="admin"><![CDATA[$items['news'] = 'news';]]></hook>
     </hooks>
 
     <install>
