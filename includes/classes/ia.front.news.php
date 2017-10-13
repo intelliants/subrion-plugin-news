@@ -30,6 +30,8 @@ class iaNews extends abstractModuleFront
 
     protected $_itemName = 'news';
 
+    protected $_moduleName = 'news';
+
     public $coreSearchEnabled = true;
     public $coreSearchOptions = [
         'tableAlias' => 'n',
