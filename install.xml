@@ -69,12 +69,12 @@
     <config group="news" name="newsline_display_img" type="radio" values="1,0" description="Display images">0</config>
 
     <blocks>
-        <block title="Latest News" name="latest_news" collapsible="1" position="left" type="smarty" classname="" filename="block.latest_news"><![CDATA[]]></block>
-        <block title="Newsline" name="newsline" position="verybottom" type="smarty" classname="" filename="block.newsline"><![CDATA[]]></block>
+        <block title="Latest News" name="latest_news" collapsible="1" position="left" type="smarty" classname="" filename="block.latest_news.tpl"><![CDATA[]]></block>
+        <block title="Newsline" name="newsline" position="verybottom" type="smarty" classname="" filename="block.newsline.tpl"><![CDATA[]]></block>
     </blocks>
 
     <hooks>
-        <hook name="phpCoreBeforePageDisplay" page_type="front" filename="hook.blocks-load"><![CDATA[]]></hook>
+        <hook name="phpCoreBeforePageDisplay" page_type="front" filename="hook.blocks-load.php"><![CDATA[]]></hook>
         <hook name="adminDashboardStatistics" page_type="admin"><![CDATA[$items['news'] = 'news';]]></hook>
     </hooks>
 
