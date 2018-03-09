@@ -4,9 +4,9 @@
     <summary>Allows to create news section on the website</summary>
     <author>Intelliants LLC</author>
     <contributor>Intelliants LLC</contributor>
-    <version>4.1.0</version>
-    <date>2017-05-02</date>
-    <compatibility>4.1</compatibility>
+    <version>4.2.0</version>
+    <date>2018-03-09</date>
+    <compatibility>4.2</compatibility>
 
     <items>
         <item payable="0">news</item>
