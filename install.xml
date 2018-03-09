@@ -13,12 +13,12 @@
     </items>
 
     <actions>
-        <action name="news" url="news/news/" icon="list" pages="news:add,news:edit"><![CDATA[]]></action>
-        <action name="add_news" url="news/news/add/" icon="plus" pages="news:read,news:edit"><![CDATA[]]></action>
+        <action name="news" url="news/" icon="list" pages="news:add,news:edit"><![CDATA[]]></action>
+        <action name="add_news" url="news/add/" icon="plus" pages="news:read,news:edit"><![CDATA[]]></action>
     </actions>
 
     <adminpages>
-        <page group="content" name="news" url="news/news/" menus="menu">News</page>
+        <page group="content" name="news" url="news/" menus="menu">News</page>
     </adminpages>
 
     <pages>

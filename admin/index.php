@@ -39,6 +39,10 @@ class iaBackendController extends iaAbstractControllerModuleBackend
 
     protected $_activityLog = ['item' => 'news'];
 
+    public function init()
+    {
+        $this->_path = IA_ADMIN_URL . $this->getName() . IA_URL_DELIMITER;
+    }
 
     protected function _modifyGridParams(&$conditions, &$values, array $params)
     {
