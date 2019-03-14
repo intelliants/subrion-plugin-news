@@ -70,7 +70,7 @@ if (iaView::REQUEST_HTML == $iaView->getRequestType()) {
 
         $rows = $iaNews->get('1=1', $pagination['start'], $pagination['limit']);
 
-        $pagination['total'] = $iaDb->foundRows();
+        $pagination['total'] = $iaNews->getFoundRows();
 
         $iaView->assign('news', $rows);
         $iaView->assign('pagination', $pagination);

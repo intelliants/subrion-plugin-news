@@ -38,6 +38,8 @@ class iaNews extends abstractModuleFront
         'regularSearchFields' => ['title', 'body'],
     ];
 
+    private $_foundRows = 0;
+
 
     public function get($where, $start = null, $limit = null)
     {
@@ -52,8 +54,15 @@ class iaNews extends abstractModuleFront
         ]);
 
         $rows = $this->iaDb->getAll($sql);
+
+        $this->_foundRows = $this->iaDb->foundRows();
         $this->_processValues($rows);
 
         return $rows;
+    }
+
+    public function getFoundRows()
+    {
+        return $this->_foundRows;
     }
 }
