@@ -61,6 +61,13 @@ class iaNews extends abstractModuleFront
         return $rows;
     }
 
+    public function coreSearch($stmt, $start, $limit, $order)
+    {
+        $rows = $this->get($stmt, $start, $limit);
+
+        return [$this->getFoundRows(), $rows];
+    }
+
     public function getFoundRows()
     {
         return $this->_foundRows;
